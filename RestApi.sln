@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B5CA0355-7494-44D3-8E78-3F0A809F78E0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{C4ECF4FE-78DC-49BA-85D9-9C6711AD9469}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{D71B8B9E-A6EB-4C35-B41B-9E3C991B7C6F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{C0DE0F51-5587-46AE-B6F3-C01598F5EF11}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{956A4969-CEA5-4AD2-AAFD-862B5AFF53CC}"
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D71B8B9E-A6EB-4C35-B41B-9E3C991B7C6F} = {B5CA0355-7494-44D3-8E78-3F0A809F78E0}
+		{C0DE0F51-5587-46AE-B6F3-C01598F5EF11} = {B5CA0355-7494-44D3-8E78-3F0A809F78E0}
+		{956A4969-CEA5-4AD2-AAFD-862B5AFF53CC} = {B5CA0355-7494-44D3-8E78-3F0A809F78E0}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D38CE723-8F6C-477B-A0F8-F204DFD5FB7C}
+	EndGlobalSection
+EndGlobal
