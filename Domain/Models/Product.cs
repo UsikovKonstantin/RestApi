@@ -1,6 +1,6 @@
 ﻿namespace Domain.Models;
 
-public class Product : BaseModel
+public class Product : BaseEntity
 {
     public string Name { get; set; } = string.Empty;
 
