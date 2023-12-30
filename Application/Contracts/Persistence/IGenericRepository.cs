@@ -4,7 +4,7 @@ namespace Application.Contracts.Persistence;
 
 public interface IGenericRepository<T> where T : BaseEntity
 {
-	Task<T> GetAllAsync();
+	Task<List<T>> GetAllAsync();
 
 	Task<T> GetByIdAsync(int id);
 
