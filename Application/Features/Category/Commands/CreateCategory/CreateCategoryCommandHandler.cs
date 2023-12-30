@@ -1,5 +1,7 @@
 ﻿using Application.Contracts.Persistence;
+using Application.Exceptions;
 using AutoMapper;
+using FluentValidation.Results;
 using MediatR;
 
 namespace Application.Features.Category.Commands.CreateCategory;
@@ -17,8 +19,11 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 
 	public async Task<int> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
 	{
-		// TODO: Проверить входящие данные
-
+		// Проверить входящие данные
+		CreateCategoryCommandValidator validator = new CreateCategoryCommandValidator(_categoryRepository);
+		ValidationResult validationResult = await validator.ValidateAsync(request, cancellationToken);
+		if (!validationResult.IsValid)
+			throw new BadRequestException("Invalid Category", validationResult);
 
 		// Преобразовать элемент к Category
 		Domain.Category category = _mapper.Map<Domain.Category>(request);
