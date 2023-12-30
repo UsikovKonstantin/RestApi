@@ -1,4 +1,5 @@
 ﻿using Application.Contracts.Persistence;
+using Application.Exceptions;
 using MediatR;
 
 namespace Application.Features.Category.Commands.DeleteCategory;
@@ -17,8 +18,9 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
 		// Получить объект из базы данных
 		Domain.Category category = await _categoryRepository.GetByIdAsync(request.Id);
 
-		// TODO: Проверить, что объект существует
-
+		// Проверить, что объект существует
+		if (category == null)
+			throw new NotFoundException(nameof(Domain.Category), request.Id);
 
 		// Удалить объект из базы данных
 		await _categoryRepository.DeleteAsync(category);

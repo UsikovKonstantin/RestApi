@@ -1,4 +1,5 @@
 ﻿using Application.Contracts.Persistence;
+using Application.Exceptions;
 using AutoMapper;
 using MediatR;
 
@@ -19,6 +20,10 @@ public class GetCategoryDetailsQueryHandler : IRequestHandler<GetCategoryDetails
 	{
 		// Получить данные из базы данных
 		Domain.Category category = await _categoryRepository.GetByIdAsync(request.Id);
+
+		// Проверить, что объект существует
+		if (category == null)
+			throw new NotFoundException(nameof(Domain.Category), request.Id);
 
 		// Преобразовать элемент к CategoryDetailsResponse
 		CategoryDetailsResponse categoryDetailsResponse = _mapper.Map<CategoryDetailsResponse>(category);
