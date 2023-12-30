@@ -18,7 +18,7 @@ public class GetCategoryDetailsQueryHandler : IRequestHandler<GetCategoryDetails
 	public async Task<CategoryDetailsResponse> Handle(GetCategoryDetailsQuery request, CancellationToken cancellationToken)
 	{
 		// Получить данные из базы данных
-		Domain.Models.Category category = await _categoryRepository.GetByIdAsync(request.Id);
+		Domain.Category category = await _categoryRepository.GetByIdAsync(request.Id);
 
 		// Преобразовать элемент к CategoryDetailsResponse
 		CategoryDetailsResponse categoryDetailsResponse = _mapper.Map<CategoryDetailsResponse>(category);

@@ -2,4 +2,7 @@
 
 namespace Application.Features.Category.Queries.GetAllCategoriesDetails;
 
-public record GetCategoryDetailsQuery(int Id) : IRequest<CategoryDetailsResponse>;
+public class GetCategoryDetailsQuery: IRequest<CategoryDetailsResponse>
+{
+    public int Id { get; set; }
+}

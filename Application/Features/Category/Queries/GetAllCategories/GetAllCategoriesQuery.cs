@@ -2,4 +2,6 @@
 
 namespace Application.Features.Category.Queries.GetAllCategories;
 
-public record GetAllCategoriesQuery : IRequest<List<CategoryResponse>>;
+public class GetAllCategoriesQuery : IRequest<List<CategoryResponse>>
+{
+}
