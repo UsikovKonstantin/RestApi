@@ -19,7 +19,7 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
 
 	public async Task<Unit> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
 	{
-		// TODO: Проверить входящие данные
+		// Проверить входящие данные
 		UpdateCategoryCommandValidator validator = new UpdateCategoryCommandValidator(_categoryRepository);
 		ValidationResult validationResult = await validator.ValidateAsync(request, cancellationToken);
 		if (!validationResult.IsValid)
