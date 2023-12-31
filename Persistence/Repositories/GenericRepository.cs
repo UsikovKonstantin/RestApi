@@ -17,12 +17,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
 	public async Task<IEnumerable<T>> GetAllAsync()
 	{
-		return await _context.Set<T>().ToListAsync();
+		return await _context.Set<T>().AsNoTracking().ToListAsync();
 	}
 
 	public async Task<T?> GetByIdAsync(int id)
 	{
-		return await _context.Set<T>().FindAsync(id);
+		return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
 	}
 
 	public async Task CreateAsync(T entity)
