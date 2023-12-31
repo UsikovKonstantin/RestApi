@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Features.Category.Queries.GetAllCategories;
 
-public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuery, List<CategoryResponse>>
+public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuery, IEnumerable<CategoryResponse>>
 {
     private readonly ICategoryRepository _categoryRepository;
     private readonly IMapper _mapper;
@@ -15,13 +15,13 @@ public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuer
         _mapper = mapper;
     }
 
-    public async Task<List<CategoryResponse>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<CategoryResponse>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
 	{
         // Получить данные из базы данных
-        List<Domain.Category> categories = await _categoryRepository.GetAllAsync();
+        IEnumerable<Domain.Category> categories = await _categoryRepository.GetAllAsync();
 
 		// Преобразовать элементы к CategoryResponse
-        List<CategoryResponse> categoryResponses = _mapper.Map<List<CategoryResponse>>(categories);
+		IEnumerable<CategoryResponse> categoryResponses = _mapper.Map<IEnumerable<CategoryResponse>>(categories);
 
 		// Вернуть список
         return categoryResponses;

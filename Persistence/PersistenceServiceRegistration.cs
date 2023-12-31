@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Application.Contracts.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.DatabaseContext;
+using Persistence.Repositories;
 
 namespace Persistence;
 
@@ -13,6 +15,10 @@ public static class PersistenceServiceRegistration
 		{
 			options.UseSqlServer(configuration.GetConnectionString("ProductDatabaseConnectionString"));
 		});
+
+		services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+		services.AddScoped<ICategoryRepository, CategoryRepository>();
+		services.AddScoped<IProductRepository, ProductRepository>();
 
 		return services;
 	}
