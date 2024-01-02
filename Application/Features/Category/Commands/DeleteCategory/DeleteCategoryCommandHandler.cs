@@ -16,7 +16,7 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
 	public async Task<Unit> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
 	{
 		// Получить объект из базы данных
-		Domain.Category category = await _categoryRepository.GetByIdAsync(request.Id);
+		Domain.Category? category = await _categoryRepository.GetByIdAsync(request.Id);
 
 		// Проверить, что объект существует
 		if (category == null)

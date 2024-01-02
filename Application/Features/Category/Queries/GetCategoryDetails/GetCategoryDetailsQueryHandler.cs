@@ -19,7 +19,7 @@ public class GetCategoryDetailsQueryHandler : IRequestHandler<GetCategoryDetails
 	public async Task<CategoryDetailsResponse> Handle(GetCategoryDetailsQuery request, CancellationToken cancellationToken)
 	{
 		// Получить данные из базы данных
-		Domain.Category category = await _categoryRepository.GetByIdAsync(request.Id);
+		Domain.Category? category = await _categoryRepository.GetByIdAsync(request.Id);
 
 		// Проверить, что объект существует
 		if (category == null)

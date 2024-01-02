@@ -34,6 +34,10 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
 		// Преобразовать элемент к Category
 		Domain.Category category = _mapper.Map<Domain.Category>(request);
 
+		// Назначить CreatedDate.
+		Domain.Category? categoryInDatabase = await _categoryRepository.GetByIdAsync(request.Id);
+		category.CreatedDate = categoryInDatabase?.CreatedDate;
+
 		// Обновить объект в базе данных
 		await _categoryRepository.UpdateAsync(category);
 		_logger.LogInformation("Category updated successfully");
