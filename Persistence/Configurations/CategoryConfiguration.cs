@@ -16,7 +16,7 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 				Name = "name1",
 				Description = "description1",
 				CreatedDate = now,
-				ModifiedDate = now,
+				ModifiedDate = now
 			},
 			new Category
 			{
@@ -24,7 +24,7 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 				Name = "name2",
 				Description = "description2",
 				CreatedDate = now,
-				ModifiedDate = now,
+				ModifiedDate = now
 			}
 		);
 

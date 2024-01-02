@@ -20,6 +20,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 				ExpirationDate = now.AddYears(1),
 				CreatedDate = now,
 				ModifiedDate = now,
+				CategoryId = 1
 			},
 			new Product
 			{
@@ -31,6 +32,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 				ExpirationDate = now.AddYears(2),
 				CreatedDate = now,
 				ModifiedDate = now,
+				CategoryId = 2
 			}
 		);
 

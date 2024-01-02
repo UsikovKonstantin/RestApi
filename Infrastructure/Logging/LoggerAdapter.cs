@@ -1,14 +1,15 @@
 ﻿using Application.Contracts.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Logging;
 
 public class LoggerAdapter<T> : IAppLogger<T>
 {
-	private readonly IAppLogger<T> _logger;
+	private readonly ILogger<T> _logger;
 
-    public LoggerAdapter(IAppLogger<T> logger)
+    public LoggerAdapter(ILoggerFactory loggerFactory)
     {
-        _logger = logger;
+        _logger = loggerFactory.CreateLogger<T>();
     }
 
 	public void LogInformation(string message, params object[] args)
