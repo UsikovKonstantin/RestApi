@@ -13,10 +13,10 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
 
         RuleFor(c => c.Name)
             .NotEmpty().WithMessage("{PropertyName} is required")
-            .MaximumLength(50).WithMessage("{PropertyName} must be fewer than 50 characters");
+            .MaximumLength(50).WithMessage("{PropertyName} must be fewer than {ComparisonValue} characters");
 
 		RuleFor(c => c.Description)
-		   .MaximumLength(100).WithMessage("{PropertyName} must be fewer than 100 characters");
+		   .MaximumLength(100).WithMessage("{PropertyName} must be fewer than {ComparisonValue} characters");
 
         RuleFor(c => c)
             .MustAsync(CategoryNameUnique)

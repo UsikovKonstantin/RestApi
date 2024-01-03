@@ -11,9 +11,9 @@ public class CategoryProfile : Profile
 {
     public CategoryProfile()
     {
-        CreateMap<Category, CategoryResponse>().ReverseMap();
-		CreateMap<Category, CategoryDetailsResponse>().ReverseMap();
-		CreateMap<CreateCategoryCommand, Category>().ReverseMap();
-		CreateMap<UpdateCategoryCommand, Category>().ReverseMap();
+        CreateMap<Category, CategoryResponse>();
+		CreateMap<Category, CategoryDetailsResponse>();
+		CreateMap<CreateCategoryCommand, Category>();
+		CreateMap<UpdateCategoryCommand, Category>();
 	}
 }

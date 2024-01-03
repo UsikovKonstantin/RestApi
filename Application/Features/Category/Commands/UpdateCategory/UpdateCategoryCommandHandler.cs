@@ -22,6 +22,13 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
 
 	public async Task<Unit> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
 	{
+		// Получить объект из базы данных
+		Domain.Category? category = await _categoryRepository.GetByIdAsync(request.Id);
+
+		// Проверить, что объект существует
+		if (category == null)
+			throw new NotFoundException(nameof(Domain.Category), request.Id);
+
 		// Проверить входящие данные
 		UpdateCategoryCommandValidator validator = new UpdateCategoryCommandValidator(_categoryRepository);
 		ValidationResult validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -31,12 +38,8 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
 			throw new BadRequestException("Invalid Category", validationResult);
 		}
 
-		// Преобразовать элемент к Category
-		Domain.Category category = _mapper.Map<Domain.Category>(request);
-
-		// Назначить CreatedDate.
-		Domain.Category? categoryInDatabase = await _categoryRepository.GetByIdAsync(request.Id);
-		category.CreatedDate = categoryInDatabase?.CreatedDate;
+		// Обновить объект
+		_mapper.Map(request, category);
 
 		// Обновить объект в базе данных
 		await _categoryRepository.UpdateAsync(category);
