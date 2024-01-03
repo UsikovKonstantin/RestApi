@@ -14,6 +14,6 @@ public class CategoryRepository : GenericRepository<Category>, ICategoryReposito
 
 	public async Task<Category?> GetCategoryByNameAsync(string name)
 	{
-		return await _context.Categories.FirstOrDefaultAsync(c => c.Name == name);
+		return await _context.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Name == name);
 	}
 }
