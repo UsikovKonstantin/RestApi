@@ -1,4 +1,5 @@
 ﻿using Application.Contracts.Persistence;
+using Application.Features.Category.Shared;
 using FluentValidation;
 
 namespace Application.Features.Category.Commands.CreateCategory;
@@ -11,16 +12,10 @@ public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCo
     {
         _categoryRepository = categoryRepository;
 
-        RuleFor(c => c.Name)
-            .NotEmpty().WithMessage("{PropertyName} is required")
-            .MaximumLength(50).WithMessage("{PropertyName} must be fewer than {ComparisonValue} characters");
+		Include(new BaseCategoryCommandValidator());
 
-		RuleFor(c => c.Description)
-		   .MaximumLength(100).WithMessage("{PropertyName} must be fewer than {ComparisonValue} characters");
-
-        RuleFor(c => c)
-            .MustAsync(CategoryNameUnique)
-            .WithMessage("Category already exists");
+		RuleFor(c => c)
+            .MustAsync(CategoryNameUnique).WithMessage("Category with this name already exists");
 	}
 
 	private async Task<bool> CategoryNameUnique(CreateCategoryCommand command, CancellationToken token)

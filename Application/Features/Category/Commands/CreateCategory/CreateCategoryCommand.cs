@@ -1,10 +1,9 @@
-﻿using MediatR;
+﻿using Application.Features.Category.Shared;
+using MediatR;
 
 namespace Application.Features.Category.Commands.CreateCategory;
 
-public class CreateCategoryCommand : IRequest<int>
+public class CreateCategoryCommand : BaseCategoryCommand, IRequest<int>
 {
-	public string Name { get; set; } = string.Empty;
 
-	public string? Description { get; set; }
 }
