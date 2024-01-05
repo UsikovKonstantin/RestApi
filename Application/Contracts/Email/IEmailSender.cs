@@ -4,5 +4,5 @@ namespace Application.Contracts.Email;
 
 public interface IEmailSender
 {
-	Task<bool> SendEmail(EmailMessage email);
+	Task SendEmailAsync(EmailMessage email);
 }

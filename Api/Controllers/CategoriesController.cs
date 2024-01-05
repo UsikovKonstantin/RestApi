@@ -1,4 +1,5 @@
-﻿using Application.Features.Category.Commands.CreateCategory;
+﻿using Application.Contracts.Email;
+using Application.Features.Category.Commands.CreateCategory;
 using Application.Features.Category.Commands.DeleteCategory;
 using Application.Features.Category.Commands.UpdateCategory;
 using Application.Features.Category.Queries.GetAllCategories;
@@ -14,7 +15,7 @@ public class CategoriesController : ControllerBase
 {
 	private readonly IMediator _mediator;
 
-    public CategoriesController(IMediator mediator)
+	public CategoriesController(IMediator mediator, IEmailSender emailSender)
     {
         _mediator = mediator;
     }

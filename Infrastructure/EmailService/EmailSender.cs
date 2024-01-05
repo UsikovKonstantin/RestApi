@@ -1,8 +1,8 @@
 ﻿using Application.Contracts.Email;
 using Application.Models.Email;
 using Microsoft.Extensions.Options;
-using SendGrid;
-using SendGrid.Helpers.Mail;
+using System.Net;
+using System.Net.Mail;
 
 namespace Infrastructure.EmailService;
 
@@ -15,19 +15,14 @@ public class EmailSender : IEmailSender
 		_emailSettings = emailSettings.Value;
 	}
 
-    public async Task<bool> SendEmail(EmailMessage email)
+    public async Task SendEmailAsync(EmailMessage email)
 	{
-		SendGridClient? client = new SendGridClient(_emailSettings.ApiKey);
-		EmailAddress? to = new EmailAddress(email.To);
-		EmailAddress? from = new EmailAddress
+		SmtpClient client = new SmtpClient(_emailSettings.Smtp, _emailSettings.Port)
 		{
-			Email = _emailSettings.FromAddress,
-			Name = _emailSettings.FromName
+			EnableSsl = true,
+			Credentials = new NetworkCredential(_emailSettings.FromMail, _emailSettings.FromPassword)
 		};
 
-		SendGridMessage? message = MailHelper.CreateSingleEmail(from, to, email.Subject, email.Body, email.Body);
-		Response? response = await client.SendEmailAsync(message);
-
-		return response.IsSuccessStatusCode;
+		await client.SendMailAsync(_emailSettings.FromMail, email.ToMail, email.Subject, email.Message);
 	}
 }
