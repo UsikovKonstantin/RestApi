@@ -6,7 +6,7 @@ public interface IAuthService
 {
 	Task<RegistrationResponse> RegisterAsync(RegistrationRequest request);
 
-	Task<ConfirmRegistrationResponse> ConfirmRegistrationAsync(ConfirmRegistrationRequest request);
+	Task ConfirmRegistrationAsync(ConfirmRegistrationRequest request);
 
 	Task<AuthResponse> LoginAsync(AuthRequest request);
 }

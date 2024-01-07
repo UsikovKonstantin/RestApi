@@ -1,4 +1,5 @@
-﻿using Application.Contracts.Identity;
+﻿using Application.Contracts.Email;
+using Application.Contracts.Identity;
 using Application.Exceptions;
 using Application.Models.Identity;
 using Identity.Models;
@@ -8,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Application.Models.Email;
 
 namespace Identity.Services;
 
@@ -16,18 +18,27 @@ public class AuthService : IAuthService
 	private readonly UserManager<ApplicationUser> _userManager;
 	private readonly SignInManager<ApplicationUser> _signInManager;
 	private readonly JwtSettings _jwtSettings;
+	private readonly IEmailSender _emailSender;
 
-    public AuthService(UserManager<ApplicationUser> userManager,
+	public AuthService(UserManager<ApplicationUser> userManager,
 		SignInManager<ApplicationUser> signInManager,
-		IOptions<JwtSettings> jwtSettings)
+		IOptions<JwtSettings> jwtSettings,
+		IEmailSender emailSender)
     {
         _userManager = userManager;
 		_signInManager = signInManager;
 		_jwtSettings = jwtSettings.Value;
+		_emailSender = emailSender;
     }
 
     public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
 	{
+		ApplicationUser? foundUser = await _userManager.FindByEmailAsync(request.Email);
+		if (foundUser != null && !foundUser.EmailConfirmed && foundUser.TokenExpiredDate < DateTime.UtcNow)
+		{
+			await _userManager.DeleteAsync(foundUser);
+		}
+
 		// Создаем пользователя
 		ApplicationUser user = new ApplicationUser
 		{
@@ -40,17 +51,7 @@ public class AuthService : IAuthService
 
 		// Добавляем в базу данных
 		IdentityResult result = await _userManager.CreateAsync(user, request.Password);
-
-		if (result.Succeeded)
-		{
-			// Добавляем роль "User"
-			await _userManager.AddToRoleAsync(user, "User");
-			return new RegistrationResponse
-			{
-				UserId = user.Id,
-			};
-		}
-		else
+		if (!result.Succeeded)
 		{
 			StringBuilder sb = new StringBuilder();
 			foreach (IdentityError error in result.Errors)
@@ -59,11 +60,57 @@ public class AuthService : IAuthService
 			}
 			throw new BadRequestException(sb.ToString());
 		}
+
+		// Генерируем токен
+		JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
+		user.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+		user.TokenExpiredDate = jwtSecurityToken.ValidTo;
+
+		result = await _userManager.UpdateAsync(user);
+		if (!result.Succeeded)
+		{
+			StringBuilder sb = new StringBuilder();
+			foreach (IdentityError error in result.Errors)
+			{
+				sb.AppendFormat("{0}\n", error.Description);
+			}
+			throw new BadRequestException(sb.ToString());	
+		}
+
+		// Отправляем сообщение
+		await _emailSender.SendEmailAsync(new EmailMessage
+		{
+			ToMail = request.Email,
+			Subject = "Регистрация",
+			Message = "Ваш токен: " + user.Token
+		});
+
+		// Добавляем роль "User"
+		await _userManager.AddToRoleAsync(user, "User");
+		return new RegistrationResponse
+		{
+			UserId = user.Id,
+		};
 	}
 
-	public async Task<ConfirmRegistrationResponse> ConfirmRegistrationAsync(ConfirmRegistrationRequest request)
+	public async Task ConfirmRegistrationAsync(ConfirmRegistrationRequest request)
 	{
-		throw new NotImplementedException();
+		ApplicationUser? user = _userManager.Users.Where(u => u.Token == request.Token).FirstOrDefault();
+
+		if (user == null)
+		{
+			throw new NotFoundException(nameof(ApplicationUser), request.Token);
+		}
+
+		if (user.TokenExpiredDate < DateTime.UtcNow)
+		{
+			throw new BadRequestException($"Token expired");
+		}
+
+		user.EmailConfirmed = true;
+		user.Token = null;
+		user.TokenExpiredDate = null;
+		await _userManager.UpdateAsync(user);
 	}
 
 	public async Task<AuthResponse> LoginAsync(AuthRequest request)
@@ -88,6 +135,10 @@ public class AuthService : IAuthService
 		}
 
 		JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
+
+		user.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+		user.TokenExpiredDate = jwtSecurityToken.ValidTo;
+		await _userManager.UpdateAsync(user);
 
 		AuthResponse response = new AuthResponse
 		{
@@ -125,7 +176,7 @@ public class AuthService : IAuthService
 			issuer: _jwtSettings.Issuer, 
 			audience: _jwtSettings.Audience, 
 			claims: claims, 
-			expires: DateTime.Now.AddMinutes(_jwtSettings.DurationInMinutes), 
+			expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes), 
 			signingCredentials: signinCredentials);
 
 		return token;

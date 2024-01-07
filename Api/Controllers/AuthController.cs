@@ -26,5 +26,12 @@ namespace Api.Controllers
 		{
 			return Ok(await _authServise.LoginAsync(request));
 		}
+
+		[HttpPost("confirmRegistration")]
+		public async Task<IActionResult> ConfirmRegistration(ConfirmRegistrationRequest request)
+		{
+			await _authServise.ConfirmRegistrationAsync(request);
+			return Ok();
+		}
 	}
 }

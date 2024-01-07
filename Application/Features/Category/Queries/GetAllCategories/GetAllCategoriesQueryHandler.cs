@@ -1,4 +1,5 @@
-﻿using Application.Contracts.Persistence;
+﻿using Application.Contracts.Logging;
+using Application.Contracts.Persistence;
 using AutoMapper;
 using MediatR;
 
@@ -8,11 +9,13 @@ public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuer
 {
     private readonly ICategoryRepository _categoryRepository;
     private readonly IMapper _mapper;
+	private readonly IAppLogger<GetAllCategoriesQueryHandler> _logger;
 
-    public GetAllCategoriesQueryHandler(ICategoryRepository categoryRepository, IMapper mapper)
+	public GetAllCategoriesQueryHandler(ICategoryRepository categoryRepository, IMapper mapper, IAppLogger<GetAllCategoriesQueryHandler> logger)
     {
         _categoryRepository = categoryRepository;
         _mapper = mapper;
+        _logger = logger;
     }
 
     public async Task<IEnumerable<CategoryResponse>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
@@ -22,6 +25,8 @@ public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuer
 
 		// Преобразовать элементы к CategoryResponse
 		IEnumerable<CategoryResponse> categoryResponses = _mapper.Map<IEnumerable<CategoryResponse>>(categories);
+
+        _logger.LogInformation("Get all categories was requested.");
 
 		// Вернуть список
         return categoryResponses;
